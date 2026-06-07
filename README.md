@@ -2,7 +2,7 @@
 title: Luis Santiago — Career AI
 emoji: 🧑‍💻
 colorFrom: blue
-colorTo: slate
+colorTo: gray
 sdk: gradio
 sdk_version: 5.37.0
 app_file: app.py
