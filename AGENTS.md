@@ -20,8 +20,11 @@ Rename `luis-santiago/` to `career-data/` for clarity and remove redundant files
 
 ```bash
 git mv luis-santiago career-data
-rm career-data/old_resume.md   # superseded by refined_resume.md
-rm career-data/resume.md       # superseded by refined_resume.md
+rm career-data/old_resume.md   # superseded by resume.md
+rm career-data/linkedin.md
+rm career-data/refined_resume.md
+rm career-data/simulated_interview.md
+rm career-data/refined_simulated_interview.md
 ```
 
 Update `app.py` paths to point to `career-data/`.
@@ -36,18 +39,16 @@ Ensure `.env` is already in `.gitignore` (confirmed: line 138). No changes neede
 
 Update all remaining `.md` files in `career-data/` with Luis Santiago's latest career information:
 
-| File | Purpose |
-|------|---------|
-| `career-data/master_prompt.md` | System prompt defining persona, tone, constraints |
-| `career-data/refined_resume.md` | Current polished resume (skills, experience, projects, education) |
-| `career-data/linkedin.md` | LinkedIn profile details (work history) |
-| `career-data/simulated_interview.md` | Raw Q&A interview transcript |
-| `career-data/refined_simulated_interview.md` | Polished Q&A interview transcript |
+| File                           | Purpose                                                           |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `career-data/master_prompt.md` | System prompt defining persona, tone, constraints                 |
+| `career-data/resume.md`        | Canonical resume (skills, experience, projects, education)        |
 
 Verify each file is up-to-date with the latest:
-- AWS Cloud Practitioner certification (May 2025)
-- Current projects (PalitasPR, etc.)
-- Most recent work experience
+
+- AWS certifications (Cloud Practitioner May 2025, AI Practitioner May 2026)
+- Current projects (Career AI, PalitasPR, etc.)
+- Most recent work experience (Lockheed Martin System Integration Analyst)
 - Correct contact info and links
 
 ---
@@ -222,8 +223,8 @@ Create `.github/workflows/keep-alive.yml` to ping the Hugging Face Space every 1
 name: Keep HF Space Warm
 on:
   schedule:
-    - cron: '*/10 * * * *'  # every 10 minutes
-  workflow_dispatch:  # manual trigger
+    - cron: "*/10 * * * *" # every 10 minutes
+  workflow_dispatch: # manual trigger
 
 jobs:
   ping:
@@ -247,28 +248,39 @@ A minimal HTML page that embeds the Gradio app in a full-viewport iframe.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Luis Santiago — Career AI</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
-        iframe {
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            display: block;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      iframe {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        display: block;
+      }
     </style>
-</head>
-<body>
-    <iframe src="https://lasc1026-personal-career-agent-ai.hf.space"
-            title="Luis Santiago Career AI"
-            allow="microphone; camera"
-            loading="lazy">
+  </head>
+  <body>
+    <iframe
+      src="https://lasc1026-personal-career-agent-ai.hf.space"
+      title="Luis Santiago Career AI"
+      allow="microphone; camera"
+      loading="lazy"
+    >
     </iframe>
-</body>
+  </body>
 </html>
 ```
 
@@ -337,7 +349,7 @@ def chat(message, history):
 
 ## Stage 1 Verification Checklist
 
-1. **Path Alignment:** `career-data/` exists with only the 5 essential `.md` files. `app.py` references `career-data/`.
+1. **Path Alignment:** `career-data/` exists with only the 2 essential `.md` files. `app.py` references `career-data/`.
 2. **Environment Variables:** `GEMINI_API_KEY`, `GEMINI_BASE_URL`, `MODEL_GEMINI_FLASH` are set in `.env`.
 3. **Guardrails Test:** Inject jailbreak phrases via CLI test script — verify polite refusal.
 4. **Rate Limit Test:** Send 31 messages rapidly — verify throttle message on the 31st.
@@ -417,12 +429,12 @@ def chat(message, history):
 
 Split the monolithic `app.py` into focused modules:
 
-| Module | File | Responsibility |
-|--------|------|---------------|
-| **Config** | `config.py` | Paths, model names, rate limits, jailbreak patterns |
-| **Guardrails** | `guardrails.py` | Input validation, jailbreak detection, rate limiter |
-| **RAG Engine** | `rag.py` | LlamaIndex index + query engine initialization and query |
-| **App** | `app.py` | Gradio UI + chat orchestration + error handling |
+| Module         | File            | Responsibility                                           |
+| -------------- | --------------- | -------------------------------------------------------- |
+| **Config**     | `config.py`     | Paths, model names, rate limits, jailbreak patterns      |
+| **Guardrails** | `guardrails.py` | Input validation, jailbreak detection, rate limiter      |
+| **RAG Engine** | `rag.py`        | LlamaIndex index + query engine initialization and query |
+| **App**        | `app.py`        | Gradio UI + chat orchestration + error handling          |
 
 ### 2.2.1 — `config.py`
 
@@ -668,7 +680,7 @@ pytest tests/ -v
                     │              │                       │
                     │  ┌───────────▼───────────────────┐  │
                     │  │  career-data/*.md             │  │
-                    │  │  (5 markdown source files)    │  │
+                    │  │  (2 markdown source files)    │  │
                     │  └───────────────────────────────┘  │
                     │                                     │
                     │  ┌───────────────────────────────┐  │

@@ -3,7 +3,6 @@ import gradio as gr
 from typing import cast
 from dotenv import load_dotenv
 from openai import OpenAI
-from openai.types.chat import ChatCompletionMessageParam
 
 from guardrails import validate_input, check_rate_limit, apply_preamble
 
@@ -50,27 +49,15 @@ def main():
     try:
         with open("./career-data/master_prompt.md", "r", encoding="utf-8") as file:
             master_prompt = file.read()
-        with open("./career-data/refined_resume.md", "r", encoding="utf-8") as file:
-            refined_resume = file.read()
-        with open("./career-data/linkedin.md", "r", encoding="utf-8") as file:
-            linkedin = file.read()
-        with open(
-            "./career-data/refined_simulated_interview.md", "r", encoding="utf-8"
-        ) as file:
-            refined_simulated_interview = file.read()
+        with open("./career-data/resume.md", "r", encoding="utf-8") as file:
+            resume = file.read()
 
         system_prompt = f"""
 Master Prompt:
 {master_prompt}
 
-Refined Resume:
-{refined_resume}
-
-LinkedIn Details:
-{linkedin}
-
-Refined Simulated Interview:
-{refined_simulated_interview}
+Resume:
+{resume}
 """
         system_prompt = apply_preamble(system_prompt)
 
@@ -120,7 +107,7 @@ Refined Simulated Interview:
         theme=custom_theme, title="Luis Santiago \u2014 Career AI", css=CUSTOM_CSS
     ) as demo:
         gr.HTML(HEADER_HTML)
-        chatbot = gr.ChatInterface(chat, type="messages")
+        gr.ChatInterface(chat, type="messages")
         gr.HTML(FOOTER_HTML)
 
     demo.launch()

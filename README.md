@@ -9,40 +9,50 @@ app_file: app.py
 pinned: false
 ---
 
-# Personal Career Agent AI
+# Career AI — Personal Career Agent Chatbot
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-blue)](https://lasc1026-career-ai.hf.space)
 
-A custom AI chatbot that represents **me** in a professional context. It is designed to answer recruiter questions based on my real experience, resume, and past interviews using a structured set of markdown files and a streamlined chat interface.
+A portfolio-ready AI chatbot that represents **Luis Santiago** in a professional context. Designed to answer recruiter and hiring manager questions based on real experience, a detailed resume, and structured career data — with enterprise-grade guardrails, rate limiting, and a polished UI.
 
 ## 🔗 Live App
 
-👉 [Try it here](https://lasc1026-career-ai.hf.space/) (Might take a while for Hugging Space to load the instance if inactive. Email me at lasc1026@gmail.com if you need me to start the gradio space manually.)
+👉 [Try it here](https://lasc1026-career-ai.hf.space/) (May take a moment to wake up if the HF Space is cold. Email lasc1026@gmail.com if needed.)
 
 ## 💡 Features
 
-- Simulates me during recruiter interactions
-- Pulls from resume, LinkedIn, interview, and prompt files
-- Guardrails against prompt injection and jailbreak attempts
-- Input rate limiting and validation
-- Polished portfolio-ready UI
+- **Accurate persona simulation** — responds as Luis Santiago using structured career data
+- **Multi-layer guardrails** — jailbreak detection (15 patterns), input length cap (2000 chars), hardened system preamble preventing persona override
+- **Rate limiting** — TokenBucket algorithm (30 msg/min per session) prevents abuse
+- **Polished portfolio UI** — custom Gradio Soft theme (Inter font, blue/slate palette), branded header/footer, custom CSS for iframe embedding
+- **Three CI/CD pipelines** — auto-sync to Hugging Face Spaces, keep-alive pings (every 40 min), GitHub Pages deployment
 
 ## 🛠️ Tech Stack
 
-- **Python**
-- **Gradio** – for building the web interface
-- **OpenAI Python SDK** (`openai`) – to interact with LLMs
-- **dotenv** – for environment variable management
-- **Markdown** – stores resume, prompt, and context data
+- **Python 3** — core application logic
+- **Gradio** — web interface (Blocks API, custom theme, HTML components)
+- **OpenAI Python SDK** — LLM interaction via Gemini API
+- **Python-dotenv** — environment variable management
+- **Markdown** — structured career data files
+- **GitHub Actions** — CI/CD, keep-alive, Pages deployment
 
-## 📁 Context Files Used
+## 📁 Career Data Files
 
-Located in the `./career-data/` folder:
+Located in `./career-data/`:
 
-- `master_prompt.md`
-- `refined_resume.md`
-- `linkedin.md`
-- `simulated_interview.md`
-- `refined_simulated_interview.md`
+| File | Purpose |
+|------|---------|
+| `resume.md` | Canonical resume with full role descriptions, projects, and certifications |
+| `master_prompt.md` | System prompt defining persona, tone, constraints, and context |
 
-These files are loaded and injected into the system prompt.
+## 🧱 Architecture
+
+```
+app.py           → Gradio Blocks UI + chat orchestration + error handling
+guardrails.py    → Jailbreak detection, input validation, TokenBucket rate limiter
+career-data/     → Structured markdown files loaded into the system prompt
+.github/workflows → sync-to-hub.yml, keep-alive.yml, deploy-gh-pages.yml
+docs/            → index.html for GitHub Pages iframe embedding
+```
+
+The system loads all markdown files at startup, concatenates them with a hardened preamble, and injects them as the system prompt for every conversation turn.
